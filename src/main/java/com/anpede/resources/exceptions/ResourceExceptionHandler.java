@@ -11,7 +11,7 @@ import com.anpede.services.exceptions.EntityNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@ControllerAdvice
+@ControllerAdvice //É um componente que vai junto na hora de subir. Basta fazer a notação.
 public class ResourceExceptionHandler {
 	
 	@ExceptionHandler(EntityNotFoundException.class)

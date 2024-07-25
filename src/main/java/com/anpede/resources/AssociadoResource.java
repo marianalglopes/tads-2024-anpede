@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,10 +50,17 @@ public class AssociadoResource {
 		return ResponseEntity.created(uri).body(null);
 	}
 	
+	//Passo um parâmetro na URL para ele saber o que ele está atualizando (qual "id" estará alterando). As chaves querem dizer interpolação.
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<AssociadoDTO> update(@PathVariable Long id, @RequestBody AssociadoDTO dto) {
 		dto = service.update(id, dto);
-		return ResponseEntity.ok().body(dto);
+		return ResponseEntity.ok().body(dto); //O "ok" é o código 200. Devolve-se o DTO em ".body(dto)".
+	}
+	
+	@DeleteMapping(value = "/{id}") //Valor que estará vindo na URL.
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		service.delete(id);
+		return ResponseEntity.noContent().build(); //Ele vai dar "noContent" porque o registro foi deletado. O "build" é para construir a resposta HTTP sem conteúdo, diferente do "body".
 	}
 }
 

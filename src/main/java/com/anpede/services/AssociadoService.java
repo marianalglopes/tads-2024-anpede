@@ -28,9 +28,8 @@ public class AssociadoService {
 
 	@Transactional(readOnly = true)
 	public AssociadoDTO findById(Long id) {
-		Optional<Associado> obj = repository.findById(id);
-		Associado a = obj
-				.orElseThrow(() -> new EntityNotFoundException("O registro não foi localizado na base de dados"));
+		Optional<Associado> obj = repository.findById(id); //Arrow-function que joga a mensagem da exceção
+		Associado a = obj.orElseThrow(() -> new EntityNotFoundException("O registro não foi localizado na base de dados"));
 
 		return new AssociadoDTO(a);
 	}
@@ -48,10 +47,30 @@ public class AssociadoService {
 		entity = repository.save(entity); //Retroalimenta a 'entity'. Ao dar o 'save', ele gera o id no banco
 		return new AssociadoDTO(entity);
 	}
-
+	
+	@Transactional //A transação só vai "morrer" no fim.
 	public AssociadoDTO update(Long id, AssociadoDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+		Associado entity = repository.getReferenceById(id); //Pego a variável da memória que já está no pc.
+		
+		entity.setNome(dto.getNome());
+		entity.setCPF(dto.getCPF());
+		entity.setDataNascimento(dto.getDataNascimento());
+		entity.setTelefone(dto.getTelefone());
+		entity.setEmail(dto.getEmail());
+		entity.setEndereco(dto.getEndereco());
+		
+		entity = repository.save(entity); //Retroalimenta a 'entity'. Ao dar o 'save', ele gera o id no banco
+		return new AssociadoDTO(entity);
+		
+		} catch(jakarta.persistence.EntityNotFoundException e) {
+			throw new EntityNotFoundException("O recurso com o ID " +id+ " não foi localizado.");
+		}
 	}
-
+	//Implementar tratamento de exceções para a deleção de registros
+	public void delete(Long id) {
+		repository.deleteById(id);
+		
+	}
+	
 }
